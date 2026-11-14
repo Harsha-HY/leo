@@ -26,7 +26,6 @@ export default function AgenciexNavbar({ onOpenDonate }) {
     { name: t.navImpact, href: "#impact" },
     { name: t.navGovernance, href: "#governance" },
     { name: t.navOffices, href: "#offices" },
-    { name: t.navReports, href: "#reports" },
   ];
 
   return (
