@@ -7,11 +7,26 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
   const { theme } = useTheme();
   const [rotation, setRotation] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
+  const [radius, setRadius] = useState(340);
 
   const projects = pptData.flagshipProjects.slice(0, 6);
   const count = projects.length;
-  const radius = 340; // distance in Z space
   const angleStep = 360 / count;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 480) {
+        setRadius(230);
+      } else if (window.innerWidth < 768) {
+        setRadius(280);
+      } else {
+        setRadius(340);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!autoRotate) return;
@@ -32,13 +47,13 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
   };
 
   return (
-    <section className={`py-20 sm:py-28 ${theme.subBg} border-b ${theme.border} transition-colors overflow-hidden select-none`}>
+    <section className={`py-14 sm:py-20 lg:py-28 ${theme.subBg} border-b ${theme.border} transition-colors overflow-hidden select-none`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 mb-10 sm:mb-14">
           <div>
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
               <span
                 style={{ color: theme.accent }}
                 className="text-xs font-mono font-semibold uppercase tracking-wider"
@@ -49,19 +64,19 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
                 Spatial Orbit
               </span>
             </div>
-            <h2 className={`text-3xl sm:text-5xl font-extrabold ${theme.text} tracking-tight leading-[1.12] font-display`}>
+            <h2 className={`text-2xl sm:text-4xl lg:text-5xl font-extrabold ${theme.text} tracking-tight leading-[1.12] font-display`}>
               Spin through our field interventions in 3D.
             </h2>
-            <p className={`text-sm sm:text-base ${theme.textMuted} mt-2`}>
+            <p className={`text-xs sm:text-base ${theme.textMuted} mt-2 max-w-xl`}>
               Interact with our flagship programs positioned across a 360-degree spatial carousel.
             </p>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setAutoRotate(!autoRotate)}
-              className={`p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all text-xs flex items-center gap-1.5 shadow-xs`}
+              className={`p-2 sm:p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all text-xs flex items-center gap-1.5 shadow-xs`}
               title="Toggle Auto Spin"
             >
               {autoRotate ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -70,14 +85,14 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
 
             <button
               onClick={handlePrev}
-              className={`p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all shadow-xs`}
+              className={`p-2 sm:p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all shadow-xs`}
               aria-label="Previous Slide"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={handleNext}
-              className={`p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all shadow-xs`}
+              className={`p-2 sm:p-2.5 rounded-full border ${theme.border} ${theme.cardBg} ${theme.text} hover:scale-105 transition-all shadow-xs`}
               aria-label="Next Slide"
             >
               <ChevronRight className="w-4 h-4" />
@@ -86,14 +101,14 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
         </div>
 
         {/* 3D Cylindrical Stage Viewport */}
-        <div className="relative h-[480px] w-full flex items-center justify-center perspective-1000">
+        <div className="relative h-[420px] sm:h-[480px] w-full flex items-center justify-center perspective-1000 overflow-hidden">
           
           <div
             style={{
               transform: `rotateX(-5deg) rotateY(${rotation}deg)`,
               transition: 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)',
             }}
-            className="relative w-72 sm:w-80 h-96 preserve-3d"
+            className="relative w-64 sm:w-80 h-84 sm:h-96 preserve-3d"
           >
             {projects.map((p, index) => {
               const cardAngle = index * angleStep;
@@ -108,7 +123,7 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
                   className={`absolute inset-0 rounded-3xl ${theme.cardBg} border ${theme.cardBorder} hover:border-[#ff6036] shadow-xl hover:shadow-2xl overflow-hidden cursor-pointer group transition-all backface-hidden flex flex-col justify-between`}
                 >
                   {/* Photo with gradient overlay */}
-                  <div className="relative h-52 overflow-hidden bg-zinc-900">
+                  <div className="relative h-44 sm:h-52 overflow-hidden bg-zinc-900">
                     <img
                       src={p.image}
                       alt={p.title}
@@ -131,12 +146,12 @@ export default function Trending3DCylinderDeck({ onSelectProject }) {
                   </div>
 
                   {/* Body Info */}
-                  <div className="p-4 space-y-1.5 flex-1 flex flex-col justify-between">
+                  <div className="p-3.5 sm:p-4 space-y-1 sm:space-y-1.5 flex-1 flex flex-col justify-between">
                     <div>
-                      <h4 className={`font-bold text-sm ${theme.text} line-clamp-1 group-hover:text-[#ff6036] transition-colors`}>
+                      <h4 className={`font-bold text-xs sm:text-sm ${theme.text} line-clamp-1 group-hover:text-[#ff6036] transition-colors`}>
                         {p.title}
                       </h4>
-                      <p className={`text-xs ${theme.textMuted} line-clamp-2 mt-1 leading-relaxed`}>
+                      <p className={`text-[11px] sm:text-xs ${theme.textMuted} line-clamp-2 mt-1 leading-relaxed`}>
                         {p.summary}
                       </p>
                     </div>

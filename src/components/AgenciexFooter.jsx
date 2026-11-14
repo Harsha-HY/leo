@@ -11,11 +11,11 @@ export default function AgenciexFooter({ onOpenDonate }) {
   const org = pptData.organization;
 
   return (
-    <footer className={`${theme.cardBg} border-t ${theme.border} pt-16 pb-12 ${theme.text} transition-colors`}>
+    <footer className={`${theme.cardBg} border-t ${theme.border} pt-12 sm:pt-16 pb-12 ${theme.text} transition-colors`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main 4-Column Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b ${theme.border}`}>
+        {/* Main Grid: 1 col on mobile, 2 col on tablet, 12 cols on desktop */}
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-12 border-b ${theme.border}`}>
           
           {/* Column 1: Brand & Identity (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
@@ -41,7 +41,7 @@ export default function AgenciexFooter({ onOpenDonate }) {
               Empowering marginalized communities, eradicating bonded labour, ensuring child rights, and restoring ecological balance across South India.
             </p>
 
-            <div className={`pt-2 flex items-center gap-2 text-xs ${theme.textMuted}`}>
+            <div className={`pt-2 flex flex-wrap items-center gap-2 text-xs ${theme.textMuted}`}>
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full ${theme.subBg} border ${theme.border} font-mono text-[11px]`}>
                 <ShieldCheck style={{ color: theme.accent }} className="w-3.5 h-3.5" />
                 <span>Regd. Deed 24/83</span>
@@ -63,13 +63,16 @@ export default function AgenciexFooter({ onOpenDonate }) {
                 <Link to="/about" className={`hover:${theme.text} transition-colors`}>{t.navAbout}</Link>
               </li>
               <li>
-                <Link to="/services" className={`hover:${theme.text} transition-colors`}>{t.navServices}</Link>
-              </li>
-              <li>
-                <Link to="/projects" className={`hover:${theme.text} transition-colors`}>{t.navProjects}</Link>
+                <Link to="/our-work" className={`hover:${theme.text} transition-colors`}>{t.navOurWork}</Link>
               </li>
               <li>
                 <Link to="/impact" className={`hover:${theme.text} transition-colors`}>{t.navImpact}</Link>
+              </li>
+              <li>
+                <Link to="/stories" className={`hover:${theme.text} transition-colors`}>{t.navStories}</Link>
+              </li>
+              <li>
+                <Link to="/transparency" className={`hover:${theme.text} transition-colors`}>{t.navTransparency}</Link>
               </li>
               <li>
                 <Link to="/contact" className={`hover:${theme.text} transition-colors`}>{t.navContact}</Link>
@@ -82,31 +85,35 @@ export default function AgenciexFooter({ onOpenDonate }) {
             </ul>
           </div>
 
-          {/* Column 3: Statutory Accreditations (3 cols) */}
+          {/* Column 3: Thematic Pillars Links (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
             <span className={`text-xs font-mono font-semibold uppercase tracking-wider ${theme.textMuted} block`}>
-              Accreditations
+              Thematic Focus Areas
             </span>
             <ul className={`space-y-2 text-xs ${theme.textMuted}`}>
-              <li className="flex items-start gap-1.5">
-                <span style={{ color: theme.accent }} className="font-mono font-bold">•</span>
-                <span><strong className={theme.text}>FCRA:</strong> 010140011 (MHA)</span>
+              <li>
+                <Link to="/our-work/agriculture-environment" className={`hover:${theme.text} transition-colors block leading-relaxed`}>
+                  • Agriculture & Environment
+                </Link>
               </li>
-              <li className="flex items-start gap-1.5">
-                <span style={{ color: theme.accent }} className="font-mono font-bold">•</span>
-                <span><strong className={theme.text}>Section 80G:</strong> Tax Exemption</span>
+              <li>
+                <Link to="/our-work/child-development" className={`hover:${theme.text} transition-colors block leading-relaxed`}>
+                  • Child Development & Education
+                </Link>
               </li>
-              <li className="flex items-start gap-1.5">
-                <span style={{ color: theme.accent }} className="font-mono font-bold">•</span>
-                <span><strong className={theme.text}>Section 12A:</strong> IT Act Permanent</span>
+              <li>
+                <Link to="/our-work/women-livelihoods" className={`hover:${theme.text} transition-colors block leading-relaxed`}>
+                  • Women Empowerment & Livelihoods
+                </Link>
               </li>
-              <li className="flex items-start gap-1.5">
-                <span style={{ color: theme.accent }} className="font-mono font-bold">•</span>
-                <span><strong className={theme.text}>NITI Aayog:</strong> AP/2013/0068300</span>
+              <li>
+                <Link to="/our-work/bonded-labour-tribal-welfare" className={`hover:${theme.text} transition-colors block leading-relaxed`}>
+                  • Bonded Labour & Tribal Welfare
+                </Link>
               </li>
-              <li className="flex items-start gap-1.5">
-                <span style={{ color: theme.accent }} className="font-mono font-bold">•</span>
-                <span><strong className={theme.text}>CSR-1:</strong> CSR00017363 (MCA)</span>
+              <li className="pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-mono">
+                <span className="block text-zinc-400">Statutory Clearances:</span>
+                <span className="text-zinc-600 dark:text-zinc-300">FCRA • 80G • 12A • CSR-1</span>
               </li>
             </ul>
           </div>
@@ -119,7 +126,7 @@ export default function AgenciexFooter({ onOpenDonate }) {
             <p className={`text-xs ${theme.textMuted} leading-relaxed`}>
               {org.registeredOffice}
             </p>
-            <div className={`text-xs ${theme.textMuted} space-y-1 font-mono`}>
+            <div className={`text-xs ${theme.textMuted} space-y-1 font-mono break-all`}>
               <p>Ph: {org.phone}</p>
               <p>Mob: {org.mobile}</p>
               <p>Email: {org.emailPrimary}</p>
@@ -139,13 +146,13 @@ export default function AgenciexFooter({ onOpenDonate }) {
 
         </div>
 
-        {/* Bottom Bar: Clean Copyright, No Framer Branding, No Theme Names */}
-        <div className={`pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${theme.textMuted}`}>
+        {/* Bottom Bar */}
+        <div className={`pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${theme.textMuted} text-center sm:text-left`}>
           <div className="flex items-center gap-2">
             <span>© {new Date().getFullYear()} {t.trustName}. {t.footerCopy}</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] font-mono">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px] font-mono">
             <span>Non-Profit Registered Trust Act 1882</span>
             <span>•</span>
             <span>Tirupati, Andhra Pradesh</span>
