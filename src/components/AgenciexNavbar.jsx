@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowUpRight, Heart, Globe } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Heart, Globe, ChevronDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -12,6 +12,8 @@ export default function AgenciexNavbar({ onOpenDonate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdown, setLangDropdown] = useState(false);
   const [themeDropdown, setThemeDropdown] = useState(false);
+  const [workDropdown, setWorkDropdown] = useState(false);
+  const [mobileWorkOpen, setMobileWorkOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,12 +23,31 @@ export default function AgenciexNavbar({ onOpenDonate }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close menus on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setWorkDropdown(false);
+    setLangDropdown(false);
+    setThemeDropdown(false);
+  }, [location.pathname]);
+
   const navLinks = [
     { name: t.navHome, path: "/" },
     { name: t.navAbout, path: "/about" },
-    { name: t.navServices, path: "/services" },
-    { name: t.navProjects, path: "/projects" },
+    { 
+      name: t.navOurWork, 
+      path: "/our-work",
+      hasDropdown: true,
+      children: [
+        { name: t.navAgriculture, path: "/our-work/agriculture-environment" },
+        { name: t.navChildDevelopment, path: "/our-work/child-development" },
+        { name: t.navWomenLivelihoods, path: "/our-work/women-livelihoods" },
+        { name: t.navBondedLabour, path: "/our-work/bonded-labour-tribal-welfare" },
+      ]
+    },
     { name: t.navImpact, path: "/impact" },
+    { name: t.navStories, path: "/stories" },
+    { name: t.navTransparency, path: "/transparency" },
     { name: t.navContact, path: "/contact" },
   ];
 
@@ -37,15 +58,15 @@ export default function AgenciexNavbar({ onOpenDonate }) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 lg:px-8 pt-4">
-        <nav className={`mx-auto max-w-6xl transition-all duration-300 rounded-full px-4 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between ${
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4">
+        <nav className={`mx-auto max-w-7xl transition-all duration-300 rounded-full px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2 lg:gap-4 ${
           scrolled
             ? 'bg-white/95 dark:bg-[#181a24]/95 backdrop-blur-md border border-[#e4e4e4] dark:border-[#262833] shadow-md'
-            : 'bg-white/80 dark:bg-[#181a24]/80 backdrop-blur-xs border border-[#eaeaea] dark:border-[#262833]'
+            : 'bg-white/90 dark:bg-[#181a24]/90 backdrop-blur-xs border border-[#eaeaea] dark:border-[#262833]'
         }`}>
           {/* Logo & Brand -> Routes to Home */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#e4e4e4] dark:border-zinc-700 p-0.5 bg-white shrink-0 shadow-xs">
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border border-[#e4e4e4] dark:border-zinc-700 p-0.5 bg-white shrink-0 shadow-xs">
               <img 
                 src="/images/ppt-logo.jpg" 
                 alt="Praja Pragati Trust" 
@@ -53,22 +74,78 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               />
             </div>
             <div className="flex items-baseline gap-1.5">
-              <span className={`font-bold ${theme.text} text-sm sm:text-base tracking-tight font-display`}>
+              <span className={`font-bold ${theme.text} text-xs sm:text-sm lg:text-[15px] tracking-tight font-display whitespace-nowrap`}>
                 {t.trustName}
               </span>
             </div>
           </Link>
 
-          {/* Desktop Nav Links with Multi-Page Active Highlighting */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Desktop Nav Links with Proportional Spacing & Dropdown */}
+          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 flex-1 justify-center max-w-2xl mx-1">
             {navLinks.map((link) => {
               const active = isActive(link.path);
+              
+              if (link.hasDropdown) {
+                return (
+                  <div 
+                    key={link.path}
+                    className="relative"
+                    onMouseEnter={() => setWorkDropdown(true)}
+                    onMouseLeave={() => setWorkDropdown(false)}
+                  >
+                    <Link
+                      to={link.path}
+                      style={active ? { color: theme.accent, backgroundColor: theme.accentLight } : {}}
+                      className={`px-2.5 xl:px-3 py-1.5 text-xs font-semibold rounded-full transition-all inline-flex items-center gap-1 whitespace-nowrap ${
+                        active
+                          ? 'shadow-xs font-bold'
+                          : `${theme.textMuted} hover:${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800/60`
+                      }`}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronDown className="w-3 h-3 opacity-70" />
+                    </Link>
+
+                    {/* Dropdown Menu for Our Work Sub-pages */}
+                    {workDropdown && (
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full pt-1.5 w-64 z-50 animate-scaleUp">
+                        <div className="p-2 rounded-2xl bg-white dark:bg-[#181a24] border border-[#e4e4e4] dark:border-[#262833] shadow-xl space-y-1">
+                          <Link
+                            to="/our-work"
+                            className="block px-3 py-2 rounded-xl text-xs font-bold border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                          >
+                            All Focus Areas Overview →
+                          </Link>
+                          {link.children.map((child) => {
+                            const childActive = location.pathname === child.path;
+                            return (
+                              <Link
+                                key={child.path}
+                                to={child.path}
+                                style={childActive ? { color: theme.accent, backgroundColor: theme.accentLight } : {}}
+                                className={`block px-3 py-2 rounded-xl text-xs transition-colors ${
+                                  childActive
+                                    ? 'font-bold'
+                                    : `${theme.textMuted} hover:${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800/60`
+                                }`}
+                              >
+                                {child.name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.path}
                   to={link.path}
                   style={active ? { color: theme.accent, backgroundColor: theme.accentLight } : {}}
-                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all ${
+                  className={`px-2.5 xl:px-3 py-1.5 text-xs font-semibold rounded-full transition-all whitespace-nowrap ${
                     active
                       ? 'shadow-xs font-bold'
                       : `${theme.textMuted} hover:${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800/60`
@@ -81,7 +158,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
           </div>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
             {/* MULTILINGUAL LANGUAGE SWITCHER */}
             <div className="relative">
@@ -90,8 +167,9 @@ export default function AgenciexNavbar({ onOpenDonate }) {
                   setLangDropdown(!langDropdown);
                   setThemeDropdown(false);
                 }}
-                className={`px-2.5 py-1.5 rounded-full border ${theme.border} hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold flex items-center gap-1.5 transition-colors ${theme.text}`}
+                className={`px-2 sm:px-2.5 py-1.5 rounded-full border ${theme.border} hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold flex items-center gap-1 sm:gap-1.5 transition-colors ${theme.text}`}
                 title="Translate Language (Telugu / Tamil / Hindi / English)"
+                aria-label="Select language"
               >
                 <Globe className="w-3.5 h-3.5 text-[#ff6036]" style={{ color: theme.accent }} />
                 <span className="uppercase text-[11px] font-mono">
@@ -130,15 +208,16 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               )}
             </div>
 
-            {/* Quick Aesthetic Mode Trigger (No theme names shown) */}
+            {/* Quick Aesthetic Mode Trigger */}
             <div className="relative">
               <button
                 onClick={() => {
                   setThemeDropdown(!themeDropdown);
                   setLangDropdown(false);
                 }}
-                className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors flex items-center text-xs"
+                className="p-1.5 sm:p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors flex items-center text-xs"
                 title="Change visual mode"
+                aria-label="Change theme"
               >
                 <span
                   style={{ backgroundColor: theme.accent }}
@@ -184,7 +263,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               style={{
                 backgroundColor: theme.accent,
               }}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-white hover:opacity-90 transition-all shadow-xs active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold text-white hover:opacity-90 transition-all shadow-xs active:scale-95 shrink-0"
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
               <span>{t.btnDonate80G.split('(')[0]}</span>
@@ -193,7 +272,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
             {/* Dedicated /contact Page Link */}
             <Link
               to="/contact"
-              className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-semibold ${theme.text} bg-[#f7f7f7] dark:bg-zinc-800 hover:bg-[#ebebeb] dark:hover:bg-zinc-700 border ${theme.border} transition-all active:scale-95`}
+              className={`hidden sm:inline-flex items-center gap-1 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs font-semibold ${theme.text} bg-[#f7f7f7] dark:bg-zinc-800 hover:bg-[#ebebeb] dark:hover:bg-zinc-700 border ${theme.border} transition-all active:scale-95 shrink-0`}
             >
               <span>{t.btnGetInTouch}</span>
               <ArrowUpRight className={`w-3 h-3 ${theme.textMuted}`} />
@@ -202,7 +281,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
             {/* Mobile Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`lg:hidden p-2 rounded-full ${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800 transition-colors`}
+              className={`lg:hidden p-1.5 sm:p-2 rounded-full ${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800 transition-colors`}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -213,10 +292,11 @@ export default function AgenciexNavbar({ onOpenDonate }) {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white/98 dark:bg-[#0d0e12]/98 backdrop-blur-xl lg:hidden flex flex-col pt-24 px-6 pb-8 animate-fadeIn">
+        <div className="fixed inset-0 z-40 bg-white/98 dark:bg-[#0d0e12]/98 backdrop-blur-xl lg:hidden flex flex-col pt-20 sm:pt-24 px-4 sm:px-6 pb-8 animate-fadeIn">
           <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
+            
             {/* Language Selector in Mobile */}
-            <div className="flex items-center gap-2 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-xl mb-2">
+            <div className="flex items-center gap-1.5 p-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-xl mb-2 shrink-0">
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -226,7 +306,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
                     color: l.code === lang ? '#ffffff' : undefined,
                   }}
                   className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                    l.code === lang ? 'shadow-xs' : 'text-zinc-600 dark:text-zinc-300'
+                    l.code === lang ? 'shadow-xs font-bold' : 'text-zinc-600 dark:text-zinc-300'
                   }`}
                 >
                   {l.native}
@@ -234,18 +314,62 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               ))}
             </div>
 
-            <div className={`px-3 py-1 text-xs font-mono uppercase tracking-wider ${theme.textMuted}`}>
-              Pages Directory
+            <div className={`px-2 py-1 text-xs font-mono uppercase tracking-wider ${theme.textMuted}`}>
+              Navigation Directory
             </div>
+
             {navLinks.map((link) => {
               const active = isActive(link.path);
+
+              if (link.hasDropdown) {
+                return (
+                  <div key={link.path} className="rounded-xl overflow-hidden">
+                    <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                      <Link
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        style={active ? { color: theme.accent } : {}}
+                        className={`text-base font-semibold ${active ? 'font-bold' : theme.text}`}
+                      >
+                        {link.name}
+                      </Link>
+                      <button
+                        onClick={() => setMobileWorkOpen(!mobileWorkOpen)}
+                        className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        aria-label="Expand submenu"
+                      >
+                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileWorkOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+
+                    {mobileWorkOpen && (
+                      <div className="pl-4 pr-2 py-1 space-y-1 bg-zinc-50 dark:bg-zinc-900/60 rounded-xl mt-1">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            onClick={() => setMobileMenuOpen(false)}
+                            style={location.pathname === child.path ? { color: theme.accent } : {}}
+                            className={`block px-3 py-2 text-xs font-medium ${
+                              location.pathname === child.path ? 'font-bold' : theme.textMuted
+                            } hover:${theme.text} rounded-lg`}
+                          >
+                            • {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
                   style={active ? { color: theme.accent } : {}}
-                  className={`px-4 py-3 text-base font-semibold ${
+                  className={`px-3 sm:px-4 py-2.5 text-base font-semibold ${
                     active ? 'font-bold bg-zinc-100 dark:bg-zinc-800/80' : theme.text
                   } hover:bg-[#f7f7f7] dark:hover:bg-zinc-800 rounded-xl transition-colors flex items-center justify-between`}
                 >
@@ -255,7 +379,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               );
             })}
             
-            <div className={`mt-4 pt-4 border-t ${theme.border} space-y-3`}>
+            <div className={`mt-4 pt-4 border-t ${theme.border} space-y-2 shrink-0`}>
               <Link
                 to="/donate"
                 onClick={() => setMobileMenuOpen(false)}
@@ -264,6 +388,13 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               >
                 <Heart className="w-4 h-4 fill-white" />
                 <span>{t.btnDonate80G}</span>
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`w-full py-2.5 rounded-full text-xs font-semibold text-center block ${theme.text} bg-zinc-100 dark:bg-zinc-800 border ${theme.border}`}
+              >
+                {t.btnGetInTouch}
               </Link>
             </div>
           </div>
