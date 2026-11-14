@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight, Heart, ShieldCheck, Palette, Globe, Check } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, ArrowUpRight, Heart, Globe } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function AgenciexNavbar({ onOpenDonate }) {
   const { theme, currentTheme, setTheme, themes } = useTheme();
   const { lang, setLang, t, languages } = useLanguage();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdown, setLangDropdown] = useState(false);
@@ -20,13 +22,18 @@ export default function AgenciexNavbar({ onOpenDonate }) {
   }, []);
 
   const navLinks = [
-    { name: t.navAbout, href: "#about" },
-    { name: t.navServices, href: "#services" },
-    { name: t.navProjects, href: "#projects" },
-    { name: t.navImpact, href: "#impact" },
-    { name: t.navGovernance, href: "#governance" },
-    { name: t.navOffices, href: "#offices" },
+    { name: t.navHome, path: "/" },
+    { name: t.navAbout, path: "/about" },
+    { name: t.navServices, path: "/services" },
+    { name: t.navProjects, path: "/projects" },
+    { name: t.navImpact, path: "/impact" },
+    { name: t.navContact, path: "/contact" },
   ];
+
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <>
@@ -36,8 +43,8 @@ export default function AgenciexNavbar({ onOpenDonate }) {
             ? 'bg-white/95 dark:bg-[#181a24]/95 backdrop-blur-md border border-[#e4e4e4] dark:border-[#262833] shadow-md'
             : 'bg-white/80 dark:bg-[#181a24]/80 backdrop-blur-xs border border-[#eaeaea] dark:border-[#262833]'
         }`}>
-          {/* Logo & Brand */}
-          <a href="#" className="flex items-center gap-3 group">
+          {/* Logo & Brand -> Routes to Home */}
+          <Link to="/" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded-full overflow-hidden border border-[#e4e4e4] dark:border-zinc-700 p-0.5 bg-white shrink-0 shadow-xs">
               <img 
                 src="/images/ppt-logo.jpg" 
@@ -50,19 +57,27 @@ export default function AgenciexNavbar({ onOpenDonate }) {
                 {t.trustName}
               </span>
             </div>
-          </a>
+          </Link>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Nav Links with Multi-Page Active Highlighting */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className={`px-3.5 py-1.5 text-xs font-medium ${theme.textMuted} hover:${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800/60 rounded-full transition-all`}
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  style={active ? { color: theme.accent, backgroundColor: theme.accentLight } : {}}
+                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all ${
+                    active
+                      ? 'shadow-xs font-bold'
+                      : `${theme.textMuted} hover:${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800/60`
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right Action Buttons */}
@@ -115,7 +130,7 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               )}
             </div>
 
-            {/* Quick Aesthetic Mode Trigger */}
+            {/* Quick Aesthetic Mode Trigger (No theme names shown) */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -139,21 +154,21 @@ export default function AgenciexNavbar({ onOpenDonate }) {
                   <div className="px-2 py-0.5 text-[10px] font-mono uppercase text-[#717171] border-b border-[#e4e4e4] dark:border-[#262833] mb-1">
                     Mode
                   </div>
-                  {Object.values(themes).map((t, idx) => (
+                  {Object.values(themes).map((thm, idx) => (
                     <button
-                      key={t.id}
+                      key={thm.id}
                       onClick={() => {
-                        setTheme(t.id);
+                        setTheme(thm.id);
                         setThemeDropdown(false);
                       }}
                       className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs text-left transition-all ${
-                        t.id === currentTheme
+                        thm.id === currentTheme
                           ? 'bg-[#f7f7f7] dark:bg-zinc-800 font-bold'
                           : 'hover:bg-[#fafafa] dark:hover:bg-zinc-800/40 text-zinc-600 dark:text-zinc-300'
                       }`}
                     >
                       <span
-                        style={{ backgroundColor: t.accent }}
+                        style={{ backgroundColor: thm.accent }}
                         className="w-3 h-3 rounded-full"
                       />
                       <span className="font-mono text-xs">0{idx + 1}</span>
@@ -163,9 +178,9 @@ export default function AgenciexNavbar({ onOpenDonate }) {
               )}
             </div>
 
-            {/* Donate 80G Button */}
-            <button
-              onClick={onOpenDonate}
+            {/* Dedicated /donate Page Link */}
+            <Link
+              to="/donate"
               style={{
                 backgroundColor: theme.accent,
               }}
@@ -173,16 +188,16 @@ export default function AgenciexNavbar({ onOpenDonate }) {
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
               <span>{t.btnDonate80G.split('(')[0]}</span>
-            </button>
+            </Link>
 
-            {/* Get in Touch Button */}
-            <a
-              href="#contact"
+            {/* Dedicated /contact Page Link */}
+            <Link
+              to="/contact"
               className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-semibold ${theme.text} bg-[#f7f7f7] dark:bg-zinc-800 hover:bg-[#ebebeb] dark:hover:bg-zinc-700 border ${theme.border} transition-all active:scale-95`}
             >
               <span>{t.btnGetInTouch}</span>
               <ArrowUpRight className={`w-3 h-3 ${theme.textMuted}`} />
-            </a>
+            </Link>
 
             {/* Mobile Hamburger */}
             <button
@@ -220,32 +235,36 @@ export default function AgenciexNavbar({ onOpenDonate }) {
             </div>
 
             <div className={`px-3 py-1 text-xs font-mono uppercase tracking-wider ${theme.textMuted}`}>
-              Directory
+              Pages Directory
             </div>
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3 text-base font-semibold ${theme.text} hover:bg-[#f7f7f7] dark:hover:bg-zinc-800 rounded-xl transition-colors flex items-center justify-between`}
-              >
-                <span>{link.name}</span>
-                <ArrowUpRight className={`w-4 h-4 ${theme.textMuted}`} />
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={active ? { color: theme.accent } : {}}
+                  className={`px-4 py-3 text-base font-semibold ${
+                    active ? 'font-bold bg-zinc-100 dark:bg-zinc-800/80' : theme.text
+                  } hover:bg-[#f7f7f7] dark:hover:bg-zinc-800 rounded-xl transition-colors flex items-center justify-between`}
+                >
+                  <span>{link.name}</span>
+                  <ArrowUpRight className={`w-4 h-4 ${theme.textMuted}`} />
+                </Link>
+              );
+            })}
             
             <div className={`mt-4 pt-4 border-t ${theme.border} space-y-3`}>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenDonate();
-                }}
+              <Link
+                to="/donate"
+                onClick={() => setMobileMenuOpen(false)}
                 style={{ backgroundColor: theme.accent }}
                 className="w-full py-3 rounded-full text-sm font-semibold text-white hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-md"
               >
                 <Heart className="w-4 h-4 fill-white" />
                 <span>{t.btnDonate80G}</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

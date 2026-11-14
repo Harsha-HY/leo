@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowUpRight, Heart, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, ShieldCheck } from 'lucide-react';
 import { pptData } from '../data/pptData';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -18,12 +19,12 @@ export default function AgenciexFooter({ onOpenDonate }) {
           
           {/* Column 1: Brand & Identity (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3 group inline-flex">
               <div className="w-10 h-10 rounded-full overflow-hidden border border-[#e4e4e4] dark:border-zinc-700 p-0.5 bg-white shrink-0 shadow-xs">
                 <img
                   src="/images/ppt-logo.jpg"
                   alt="Praja Pragati Trust"
-                  className="w-full h-full object-cover rounded-full"
+                  className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform"
                 />
               </div>
               <div>
@@ -34,7 +35,7 @@ export default function AgenciexFooter({ onOpenDonate }) {
                   Established 1983 • 41 Years
                 </span>
               </div>
-            </div>
+            </Link>
 
             <p className={`text-xs ${theme.textMuted} leading-relaxed max-w-sm`}>
               Empowering marginalized communities, eradicating bonded labour, ensuring child rights, and restoring ecological balance across South India.
@@ -49,32 +50,34 @@ export default function AgenciexFooter({ onOpenDonate }) {
             </div>
           </div>
 
-          {/* Column 2: Navigation Links (2 cols) */}
+          {/* Column 2: Multi-Page Directory Links (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
             <span className={`text-xs font-mono font-semibold uppercase tracking-wider ${theme.textMuted} block`}>
               Directory
             </span>
             <ul className={`space-y-2 text-xs font-medium ${theme.textMuted}`}>
               <li>
-                <a href="#about" className={`hover:${theme.text} transition-colors`}>{t.navAbout}</a>
+                <Link to="/" className={`hover:${theme.text} transition-colors`}>{t.navHome}</Link>
               </li>
               <li>
-                <a href="#services" className={`hover:${theme.text} transition-colors`}>{t.navServices}</a>
+                <Link to="/about" className={`hover:${theme.text} transition-colors`}>{t.navAbout}</Link>
               </li>
               <li>
-                <a href="#projects" className={`hover:${theme.text} transition-colors`}>{t.navProjects}</a>
+                <Link to="/services" className={`hover:${theme.text} transition-colors`}>{t.navServices}</Link>
               </li>
               <li>
-                <a href="#impact" className={`hover:${theme.text} transition-colors`}>{t.navImpact}</a>
+                <Link to="/projects" className={`hover:${theme.text} transition-colors`}>{t.navProjects}</Link>
               </li>
               <li>
-                <a href="#governance" className={`hover:${theme.text} transition-colors`}>{t.navGovernance}</a>
+                <Link to="/impact" className={`hover:${theme.text} transition-colors`}>{t.navImpact}</Link>
               </li>
               <li>
-                <a href="#offices" className={`hover:${theme.text} transition-colors`}>{t.navOffices}</a>
+                <Link to="/contact" className={`hover:${theme.text} transition-colors`}>{t.navContact}</Link>
               </li>
               <li>
-                <a href="#contact" className={`hover:${theme.text} transition-colors`}>{t.navContact}</a>
+                <Link to="/donate" style={{ color: theme.accent }} className="font-semibold hover:underline">
+                  {t.navDonate} (80G)
+                </Link>
               </li>
             </ul>
           </div>
@@ -123,14 +126,14 @@ export default function AgenciexFooter({ onOpenDonate }) {
             </div>
 
             <div className="pt-2">
-              <button
-                onClick={onOpenDonate}
+              <Link
+                to="/donate"
                 style={{ backgroundColor: theme.accent }}
                 className="w-full py-2.5 rounded-full text-xs font-semibold text-white hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
               >
                 <Heart className="w-3.5 h-3.5 fill-white" />
                 <span>{t.btnDonate80G.split('(')[0]}</span>
-              </button>
+              </Link>
             </div>
           </div>
 
