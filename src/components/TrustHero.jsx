@@ -1,7 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Calendar, Users, School, Building2, MapPin, Sparkles, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+
+// Smooth counting up animation component for key statistics
+function AnimatedCounter({ end, duration = 1800, prefix = "", suffix = "", formatComma = true }) {
+  const [count, setCount] = useState(0);
+  const nodeRef = useRef(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = nodeRef.current;
+    if (!el) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setCount(end);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !started.current) {
+          started.current = true;
+          let startTimestamp = null;
+          const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease-out cubic: rapid start with smooth deceleration
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.floor(easeOut * end);
+            setCount(currentVal);
+
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            } else {
+              setCount(end);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration]);
+
+  const displayString = formatComma ? count.toLocaleString('en-IN') : count.toString();
+
+  return (
+    <span ref={nodeRef} className="tabular-nums font-display font-extrabold inline-block">
+      {prefix}{displayString}{suffix}
+    </span>
+  );
+}
 
 export default function TrustHero({ onOpenDonate }) {
   const { t } = useLanguage();
@@ -299,87 +352,106 @@ export default function TrustHero({ onOpenDonate }) {
 
         </div>
 
-        {/* 5-Metric Floating Bar directly below Hero (Exact from Reference Screenshot!) */}
-        <div className="mt-14 sm:mt-20">
-          <div className="bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-3xl sm:rounded-4xl p-5 sm:p-7 shadow-xl border border-[#eae5d8] dark:border-emerald-800/80">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-4 divide-y sm:divide-y-0 sm:divide-x divide-zinc-100 dark:divide-emerald-800/40">
-              
-              {/* Stat 1: 1983 - Established */}
-              <div className="flex items-center gap-3.5 px-2 pt-2 sm:pt-0">
-                <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300/50 flex items-center justify-center shrink-0 text-amber-700 dark:text-amber-400">
-                  <Calendar className="w-5 h-5" />
+        {/* 5 Animated Impact Metrics in Individual Radiant Boxes (1983, 18,000+, 222, 91, 3 States) */}
+        <div className="mt-12 sm:mt-18 relative">
+          
+          {/* Radiant Glow Atmosphere */}
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 via-emerald-400/10 to-rose-400/10 blur-2xl rounded-3xl -z-10 pointer-events-none" />
+
+          {/* Individual Boxes Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
+            
+            {/* Box 1: 1983 - Established */}
+            <div className="group relative bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-md hover:shadow-2xl border border-amber-200/90 dark:border-amber-600/40 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 rounded-t-2xl sm:rounded-t-3xl" />
+              <div className="flex items-center gap-3.5 mb-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/70 border border-amber-300/60 flex items-center justify-center shrink-0 text-amber-700 dark:text-amber-400 shadow-xs group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                  <Calendar className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-extrabold text-[#0f2d37] dark:text-white font-display tracking-tight">
-                    {t.statEstablished || "1983"}
-                  </div>
-                  <div className="text-xs text-[#5a6a70] dark:text-emerald-300 font-medium">
-                    {t.statEstablishedLabel || "Established"}
+                    <AnimatedCounter end={1983} formatComma={false} />
                   </div>
                 </div>
               </div>
+              <div className="text-xs sm:text-sm font-semibold text-[#5a6a70] dark:text-emerald-300/90 leading-snug">
+                {t.statEstablishedLabel || "Established"}
+              </div>
+            </div>
 
-              {/* Stat 2: 18,000+ - Children reached */}
-              <div className="flex items-center gap-3.5 px-2 sm:px-4 pt-2 sm:pt-0">
-                <div className="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-300/50 flex items-center justify-center shrink-0 text-[#881337] dark:text-rose-400">
-                  <Users className="w-5 h-5" />
+            {/* Box 2: 18,000+ - Children reached (Current) */}
+            <div className="group relative bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-md hover:shadow-2xl border border-rose-200/90 dark:border-rose-900/60 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#881337] via-[#9f1239] to-rose-500 rounded-t-2xl sm:rounded-t-3xl" />
+              <div className="flex items-center gap-3.5 mb-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/70 border border-rose-300/60 flex items-center justify-center shrink-0 text-[#881337] dark:text-rose-400 shadow-xs group-hover:scale-110 group-hover:-rotate-3 transition-transform">
+                  <Users className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-extrabold text-[#881337] dark:text-rose-300 font-display tracking-tight">
-                    {t.statChildrenCurrent || "18,000+"}
-                  </div>
-                  <div className="text-xs text-[#5a6a70] dark:text-emerald-300 font-medium">
-                    {t.statChildrenLabel || "Children reached (Current)"}
+                    <AnimatedCounter end={18000} suffix="+" />
                   </div>
                 </div>
               </div>
+              <div className="text-xs sm:text-sm font-semibold text-[#5a6a70] dark:text-emerald-300/90 leading-snug">
+                {t.statChildrenLabel || "Children reached (Current)"}
+              </div>
+            </div>
 
-              {/* Stat 3: 222 - Anganwadi Centres */}
-              <div className="flex items-center gap-3.5 px-2 sm:px-4 pt-2 sm:pt-0">
-                <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300/50 flex items-center justify-center shrink-0 text-[#166534] dark:text-emerald-400">
-                  <Building2 className="w-5 h-5" />
+            {/* Box 3: 222 - Anganwadi Centres */}
+            <div className="group relative bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-md hover:shadow-2xl border border-emerald-200/90 dark:border-emerald-700/60 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#166534] via-emerald-600 to-teal-500 rounded-t-2xl sm:rounded-t-3xl" />
+              <div className="flex items-center gap-3.5 mb-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300/60 flex items-center justify-center shrink-0 text-[#166534] dark:text-emerald-400 shadow-xs group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                  <Building2 className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-extrabold text-[#166534] dark:text-emerald-300 font-display tracking-tight">
-                    {t.statAnganwadis || "222"}
-                  </div>
-                  <div className="text-xs text-[#5a6a70] dark:text-emerald-300 font-medium">
-                    {t.statAnganwadisLabel || "Anganwadi Centres"}
+                    <AnimatedCounter end={222} />
                   </div>
                 </div>
               </div>
-
-              {/* Stat 4: 91 - Schools */}
-              <div className="flex items-center gap-3.5 px-2 sm:px-4 pt-2 sm:pt-0">
-                <div className="w-11 h-11 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-300/50 flex items-center justify-center shrink-0 text-blue-700 dark:text-blue-400">
-                  <School className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-[#0f2d37] dark:text-white font-display tracking-tight">
-                    {t.statSchools || "91"}
-                  </div>
-                  <div className="text-xs text-[#5a6a70] dark:text-emerald-300 font-medium">
-                    {t.statSchoolsLabel || "Schools & Centres"}
-                  </div>
-                </div>
+              <div className="text-xs sm:text-sm font-semibold text-[#5a6a70] dark:text-emerald-300/90 leading-snug">
+                {t.statAnganwadisLabel || "Anganwadi Centres"}
               </div>
-
-              {/* Stat 5: 3 States - AP, Telangana, Tamil Nadu */}
-              <div className="flex items-center gap-3.5 px-2 sm:px-4 pt-2 sm:pt-0 col-span-2 sm:col-span-1">
-                <div className="w-11 h-11 rounded-2xl bg-teal-50 dark:bg-teal-950/60 border border-teal-300/50 flex items-center justify-center shrink-0 text-teal-700 dark:text-teal-400">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-[#0f2d37] dark:text-white font-display tracking-tight">
-                    {t.statStates || "3"} <span className="text-sm font-normal text-[#5a6a70]">States</span>
-                  </div>
-                  <div className="text-xs text-[#5a6a70] dark:text-emerald-300 font-medium">
-                    {t.statStatesLabel || "AP, Telangana, Tamil Nadu"}
-                  </div>
-                </div>
-              </div>
-
             </div>
+
+            {/* Box 4: 91 - Schools */}
+            <div className="group relative bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-md hover:shadow-2xl border border-blue-200/90 dark:border-blue-800/60 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 rounded-t-2xl sm:rounded-t-3xl" />
+              <div className="flex items-center gap-3.5 mb-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/70 border border-blue-300/60 flex items-center justify-center shrink-0 text-blue-700 dark:text-blue-400 shadow-xs group-hover:scale-110 group-hover:-rotate-3 transition-transform">
+                  <School className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-extrabold text-[#0f2d37] dark:text-white font-display tracking-tight">
+                    <AnimatedCounter end={91} />
+                  </div>
+                </div>
+              </div>
+              <div className="text-xs sm:text-sm font-semibold text-[#5a6a70] dark:text-emerald-300/90 leading-snug">
+                {t.statSchoolsLabel || "Schools"}
+              </div>
+            </div>
+
+            {/* Box 5: 3 States - States (AP, Telangana, Tamil Nadu) */}
+            <div className="group relative bg-white/95 dark:bg-[#132822]/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-md hover:shadow-2xl border border-teal-200/90 dark:border-teal-800/60 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 via-cyan-600 to-emerald-500 rounded-t-2xl sm:rounded-t-3xl" />
+              <div className="flex items-center gap-3.5 mb-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/70 border border-teal-300/60 flex items-center justify-center shrink-0 text-teal-700 dark:text-teal-400 shadow-xs group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-extrabold text-[#0f2d37] dark:text-white font-display tracking-tight flex items-baseline gap-1">
+                    <AnimatedCounter end={3} />
+                    <span className="text-sm font-bold text-[#5a6a70] dark:text-emerald-300">States</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-xs sm:text-sm font-semibold text-[#5a6a70] dark:text-emerald-300/90 leading-snug">
+                {t.statStatesLabel || "States (AP, Telangana, Tamil Nadu)"}
+              </div>
+            </div>
+
           </div>
         </div>
 
