@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { pptData } from '../data/pptData';
 import Trending3DBentoGrid from '../components/Trending3DBentoGrid';
+import TrustTransformation from '../components/TrustTransformation';
 import AgenciexAwards from '../components/AgenciexAwards';
 import AgenciexTestimonials from '../components/AgenciexTestimonials';
 
@@ -75,10 +76,13 @@ export default function ImpactPage({ onOpenDonate }) {
       {/* 3. Trending 3D Bento Matrix */}
       <Trending3DBentoGrid onOpenDonate={onOpenDonate} />
 
-      {/* 4. Full Awards & Recognitions Table */}
+      {/* 4. Interactive Grassroots Transformation Lens (Before vs After Slider & Delta Gauges) */}
+      <TrustTransformation onOpenDonate={onOpenDonate} />
+
+      {/* 5. Full Awards & Recognitions Table */}
       <AgenciexAwards />
 
-      {/* 5. Beneficiary Testimonials & Endorsements */}
+      {/* 6. Beneficiary Testimonials & Endorsements */}
       <AgenciexTestimonials />
 
       {/* 6. Donate / CSR Action Banner */}

@@ -178,6 +178,27 @@
   pointer-events: none;
 }
 
+/* Audio EQ Waveform Animation for Voice of Grassroots */
+@keyframes audioBarBounce {
+  0%, 100% { height: 4px; }
+  50% { height: 20px; }
+}
+
+.animate-audio-bar-1 { animation: audioBarBounce 1.1s ease-in-out infinite; }
+.animate-audio-bar-2 { animation: audioBarBounce 0.75s ease-in-out infinite 0.15s; }
+.animate-audio-bar-3 { animation: audioBarBounce 1.4s ease-in-out infinite 0.3s; }
+.animate-audio-bar-4 { animation: audioBarBounce 0.9s ease-in-out infinite 0.1s; }
+.animate-audio-bar-5 { animation: audioBarBounce 1.25s ease-in-out infinite 0.25s; }
+
+/* Subtle Laser Scan on Comparison Divider */
+@keyframes laserGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(217, 119, 6, 0.6), 0 0 20px rgba(22, 101, 52, 0.4); }
+  50% { box-shadow: 0 0 22px rgba(217, 119, 6, 0.9), 0 0 35px rgba(22, 101, 52, 0.7); }
+}
+
+.animate-laser-glow {
+  animation: laserGlow 2.5s ease-in-out infinite;
+}
 
 /* Hide Google Translate top bar and banners */
 .goog-te-banner-frame.skiptranslate,
