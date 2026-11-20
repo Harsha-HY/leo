@@ -8,39 +8,68 @@ export default {
   theme: {
     extend: {
       colors: {
-        coral: {
-          50: '#fff6f3',
-          100: '#ffede8',
-          200: '#ffdcd2',
-          500: '#ff6036',
-          600: '#ea4a1e',
-          700: '#c53811',
-        },
-        forest: {
+        trustGreen: {
           50: '#f0fdf4',
           100: '#dcfce7',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534', // Primary Logo Green
+          900: '#14532d',
+          950: '#052e16',
         },
-        royal: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
+        trustWine: {
+          50: '#fff1f2',
+          100: '#ffe4e6',
+          200: '#fecdd3',
+          300: '#fda4af',
+          400: '#fb7185',
+          500: '#f43f5e',
+          600: '#e11d48',
+          700: '#be123c',
+          800: '#9f1239',
+          900: '#881337', // Primary Logo Wine / Red
+          950: '#4c0519',
         },
-        amberGold: {
+        trustAmber: {
           50: '#fffbeb',
           100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
           500: '#f59e0b',
-          600: '#d97706',
+          600: '#d97706', // Primary Logo Amber Gold
           700: '#b45309',
+          800: '#92400e',
+          900: '#78350f',
+          950: '#451a03',
+        },
+        trustNavy: {
+          800: '#163942',
+          900: '#0f2d37', // Deep slate / teal from reference
+          950: '#081c22',
+        },
+        trustCream: {
+          50: '#ffffff',
+          100: '#fdfbf7', // Warm ivory canvas
+          200: '#f7f4ec',
+          300: '#eae5d8',
         }
+      },
+      borderRadius: {
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
+        'curve-hero': '3rem 1.5rem 3.5rem 2rem',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-        display: ['"Outfit"', 'sans-serif'],
+        display: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+        serif: ['"Lora"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       animation: {
@@ -48,8 +77,8 @@ export default {
         'float-slow': 'float 6s ease-in-out infinite',
         'float-reverse': 'floatReverse 7s ease-in-out infinite',
         'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-        'blink': 'blink 1s step-start infinite',
         'shimmer': 'shimmer 2.5s infinite linear',
+        'wave-flow': 'waveFlow 8s ease-in-out infinite alternate',
       },
       keyframes: {
         marquee: {
@@ -66,11 +95,11 @@ export default {
         },
         pulseSubtle: {
           '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.85', transform: 'scale(1.02)' },
+          '50%': { opacity: '0.9', transform: 'scale(1.02)' },
         },
-        blink: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0' },
+        waveFlow: {
+          '0%': { transform: 'translateX(0) scaleY(1)' },
+          '100%': { transform: 'translateX(-2%) scaleY(1.05)' },
         },
         shimmer: {
           '0%': { transform: 'translateX(-100%)' },

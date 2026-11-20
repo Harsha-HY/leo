@@ -3,12 +3,11 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import ScrollToTop from './components/ScrollToTop';
-import AgenciexNavbar from './components/AgenciexNavbar';
-import AgenciexFooter from './components/AgenciexFooter';
+import TrustNavbar from './components/TrustNavbar';
+import TrustFooter from './components/TrustFooter';
 import DonationModal from './components/DonationModal';
-import ThemeSwitcher from './components/ThemeSwitcher';
 
-// Pages
+// Multi-Page Views
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import OurWorkPage from './pages/OurWorkPage';
@@ -31,11 +30,11 @@ function MainLayout() {
 
   return (
     <div className={`relative min-h-screen ${theme.bg} ${theme.text} flex flex-col antialiased transition-colors duration-300 font-sans`}>
-      {/* Scroll to Top on every route change */}
+      {/* Scroll to Top on every route transition */}
       <ScrollToTop />
 
-      {/* Floating Pill Navbar with Multilingual Language Switcher (Telugu / Tamil / Hindi / English) */}
-      <AgenciexNavbar 
+      {/* Radiant Curved Trust Header matching Reference Screenshot with Multilingual Translation */}
+      <TrustNavbar 
         onOpenDonate={() => setDonateModalOpen(true)}
       />
 
@@ -183,19 +182,16 @@ function MainLayout() {
         </Routes>
       </main>
 
-      {/* Clean Multi-Page Footer */}
-      <AgenciexFooter 
+      {/* Clean Organic Waves Trust Footer - Zero Framer Branding, Zero Theme Names */}
+      <TrustFooter 
         onOpenDonate={() => setDonateModalOpen(true)}
       />
 
-      {/* Quick 80G Bank Transfer Modal */}
+      {/* 80G Bank Contribution Modal */}
       <DonationModal
         isOpen={donateModalOpen}
         onClose={() => setDonateModalOpen(false)}
       />
-
-      {/* Minimalist Floating Mode Pill */}
-      <ThemeSwitcher />
     </div>
   );
 }
